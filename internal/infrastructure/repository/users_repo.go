@@ -47,8 +47,8 @@ func (r *MongoRepository) GetUser(id string) (*users.User, error) {
 	return &u, nil
 }
 
-// UpdateUser atualiza o nível do usuário
-func (r *MongoRepository) UpdateUser(u *users.User) error {
+// UpdateLevelUser atualiza o nível do usuário
+func (r *MongoRepository) UpdateLevelUser(u *users.User) error {
 	oid, err := primitive.ObjectIDFromHex(u.ID)
 	if err != nil {
 		return err

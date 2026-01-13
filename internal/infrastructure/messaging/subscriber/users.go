@@ -13,7 +13,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-var rdb *redis.Client
 var user_service *app.UserService
 
 func init() {
@@ -27,10 +26,6 @@ func init() {
 // Função para injetar o user_service
 func SetUserService(service *app.UserService) {
 	user_service = service
-}
-
-func Run() {
-	go subCreateUser()
 }
 
 func subCreateUser() error {
@@ -51,6 +46,29 @@ func subCreateUser() error {
 		err_create := user_service.CreateUser(&user)
 		if err_create != nil {
 			fmt.Println("[ERRO] Erro ao criar user nos logs:", err_create)
+		}
+	}
+
+	return nil
+}
+
+func SubUpdateLevelUser() error {
+	ctx := context.Background()
+
+	sub := rdb.Subscribe(ctx, "update_level_user")
+	ch := sub.Channel()
+
+	for msg := range ch {
+		var user users.User
+		err := json.Unmarshal([]byte(msg.Payload), &user)
+		if err != nil {
+			fmt.Println("[ERRO] Erro ao decodificar payload de mensageria:", err)
+			continue
+		}
+
+		err = user_service.UpdateLevelUser(&user)
+		if err != nil {
+			fmt.Println("[ERRO] Erro ao criar user nos logs:", err)
 		}
 	}
 
