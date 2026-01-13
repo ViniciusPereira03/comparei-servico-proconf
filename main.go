@@ -54,9 +54,17 @@ func main() {
 		"usuarios",
 	)
 
+	logRepo := repository.NewLogsRepository(
+		mongoClient,
+		os.Getenv("MONGO_DB_NAME"),
+		"logs_confirmacao",
+	)
+
 	userService := app.NewUserService(userRepo)
+	logService := app.NewLogsService(logRepo)
 
 	subscriber.SetUserService(userService)
+	subscriber.SetLogsConfirmacaoService(logService)
 
 	// Iniciar o subscriber (rodar ouvindo eventos)
 	go func() {
