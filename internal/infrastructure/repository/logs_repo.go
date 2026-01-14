@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"comparei-servico-promer/internal/domain/logs"
+	"comparei-servico-proconf/internal/domain/logs"
 	"context"
 	"time"
 

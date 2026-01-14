@@ -1,8 +1,8 @@
 package app
 
 import (
-	"comparei-servico-promer/internal/domain/logs"
-	logs_interface "comparei-servico-promer/internal/domain/logs/interface"
+	"comparei-servico-proconf/internal/domain/logs"
+	logs_interface "comparei-servico-proconf/internal/domain/logs/interface"
 )
 
 type LogsService struct {

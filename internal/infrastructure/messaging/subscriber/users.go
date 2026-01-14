@@ -1,9 +1,9 @@
 package subscriber
 
 import (
-	"comparei-servico-promer/config"
-	"comparei-servico-promer/internal/app"
-	"comparei-servico-promer/internal/domain/users"
+	"comparei-servico-proconf/config"
+	"comparei-servico-proconf/internal/app"
+	"comparei-servico-proconf/internal/domain/users"
 	"context"
 	"encoding/json"
 	"fmt"

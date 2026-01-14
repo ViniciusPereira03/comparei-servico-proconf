@@ -1,6 +1,6 @@
 package users_interface
 
-import "comparei-servico-promer/internal/domain/users"
+import "comparei-servico-proconf/internal/domain/users"
 
 type UserRepository interface {
 	CreateUser(user *users.User) (*users.User, error)

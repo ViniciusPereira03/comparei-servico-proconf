@@ -1,10 +1,10 @@
 package main
 
 import (
-	"comparei-servico-promer/config"
-	"comparei-servico-promer/internal/app"
-	"comparei-servico-promer/internal/infrastructure/messaging/subscriber"
-	"comparei-servico-promer/internal/infrastructure/repository"
+	"comparei-servico-proconf/config"
+	"comparei-servico-proconf/internal/app"
+	"comparei-servico-proconf/internal/infrastructure/messaging/subscriber"
+	"comparei-servico-proconf/internal/infrastructure/repository"
 	"context"
 	"fmt"
 	"log"

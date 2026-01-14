@@ -1,8 +1,7 @@
 package repository
 
 import (
-	"comparei-servico-promer/internal/domain/proconf"
-
+	"comparei-servico-proconf/internal/domain/proconf"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

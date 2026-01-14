@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"comparei-servico-promer/internal/domain/users"
+	"comparei-servico-proconf/internal/domain/users"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

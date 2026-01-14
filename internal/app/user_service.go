@@ -1,8 +1,8 @@
 package app
 
 import (
-	"comparei-servico-promer/internal/domain/users"
-	users_interface "comparei-servico-promer/internal/domain/users/interface"
+	"comparei-servico-proconf/internal/domain/users"
+	users_interface "comparei-servico-proconf/internal/domain/users/interface"
 	"log"
 )
 

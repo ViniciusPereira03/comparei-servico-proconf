@@ -1,4 +1,4 @@
-module comparei-servico-promer
+module comparei-servico-proconf
 
 go 1.22.2
 
