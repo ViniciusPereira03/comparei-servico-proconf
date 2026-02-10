@@ -13,7 +13,6 @@ func NewLogsService(logRepo logs_interface.LogsRepository) *LogsService {
 	return &LogsService{logRepo: logRepo}
 }
 
-func (s *LogsService) CreateLogsConfirmacao(logs *logs.LogsConfirmacao) error {
-	_, err := s.logRepo.CreateLogsConfirmacao(logs)
-	return err
+func (s *LogsService) CreateLogsConfirmacao(logEntry *logs.LogsConfirmacao) (*logs.LogsConfirmacao, error) {
+	return s.logRepo.CreateLogsConfirmacao(logEntry)
 }

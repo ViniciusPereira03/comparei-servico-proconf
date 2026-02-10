@@ -4,6 +4,7 @@ import (
 	"comparei-servico-proconf/config"
 	"comparei-servico-proconf/internal/app"
 	"comparei-servico-proconf/internal/domain/logs"
+	"comparei-servico-proconf/internal/domain/proconf"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -13,7 +14,10 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-var logs_confirmacao_service *app.LogsService
+var (
+	logs_confirmacao_service *app.LogsService
+	proconf_service_subs     *app.ProconfService
+)
 
 func init() {
 	config.LoadConfig()
@@ -21,6 +25,12 @@ func init() {
 	rdb = redis.NewClient(&redis.Options{
 		Addr: host,
 	})
+}
+
+// Função para injetar dependências (Adicione ou Atualize esta função)
+func SetServices(logsService *app.LogsService, proconfService *app.ProconfService) {
+	logs_confirmacao_service = logsService
+	proconf_service_subs = proconfService
 }
 
 // Função para injetar o logs_confirmacao_service
@@ -59,10 +69,29 @@ func subCreateLogsConfirmacao() error {
 		}
 		logConfirmacao.NivelUsuario = user.Level
 
-		err_create := logs_confirmacao_service.CreateLogsConfirmacao(&logConfirmacao)
+		// Buscar valor atual do produto para log
+		var mercadoProduto *proconf.Proconf
+		mercadoProduto, err = proconf_service.GetMercadoProdutoByID(logEntry.Id)
+		if err != nil {
+			fmt.Println("[ERRO] Erro ao buscar mercado produto:", err)
+			continue
+		}
+		logConfirmacao.PrecoUnitario = mercadoProduto.PrecoUnitario
+
+		logConfirm, err_create := logs_confirmacao_service.CreateLogsConfirmacao(&logConfirmacao)
 		if err_create != nil {
 			fmt.Println("[ERRO] Erro ao criar log de confirmação:", err_create)
+			continue // Se falhou ao criar log, não recalculamos confiança
 		}
+		log.Println("[LOG] confirma_valor_mercado_produto criado com ID:", logConfirm.ID)
+
+		// 3. NOVO: Recalcula a confiança IMEDIATAMENTE para este produto específico
+		log.Printf("Recalculando confiança para produto ID: %d", logEntry.Id)
+		err_recalc := proconf_service_subs.CalculateConfidenceScoreForProduct(logEntry.Id)
+		if err_recalc != nil {
+			fmt.Printf("[ERRO] Falha ao recalcular confiança para ID %d: %v\n", logEntry.Id, err_recalc)
+		}
+
 	}
 
 	return nil

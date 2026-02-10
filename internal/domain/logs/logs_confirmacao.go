@@ -7,5 +7,6 @@ type LogsConfirmacao struct {
 	UsuarioID        string    `bson:"usuario_id" json:"usuario_id"`
 	NivelUsuario     int       `bson:"nivel_usuario" json:"nivel_usuario"`
 	MercadoProdutoID int       `bson:"mercado_produto_id"       json:"mercado_produto_id"`
+	PrecoUnitario    float32   `bson:"preco_unitario"   json:"preco_unitario"`
 	CreatedAt        time.Time `bson:"created_at"       json:"created_at"`
 }
