@@ -27,7 +27,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: proconfdb
       MONGO_INITDB_DATABASE: proconfdb
     volumes:
-      - mongo_data:/data/db
+      - ./data/mongo:/data/db
     networks:
       - net_proconf
     deploy:
@@ -38,6 +38,9 @@ services:
   redis:
     image: redis:7
     container_name: redis_proconf
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data/redis:/data
     networks:
       - net_proconf
     deploy:
@@ -52,6 +55,3 @@ networks:
   
   comparei_net:
     external: true
-
-volumes:
-  mongo_data:
