@@ -31,3 +31,8 @@ func (s *UserService) UpdateLevelUser(u *users.User) error {
 	return err
 }
 
+func (s *UserService) DeleteUser(u *users.User) error {
+	log.Println("EXEC: service.DeleteUser")
+	err := s.userRepo.DeleteUser(u)
+	return err
+}
