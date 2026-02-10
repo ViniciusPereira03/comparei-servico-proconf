@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/robfig/cron/v3"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -72,7 +73,36 @@ func main() {
 		subscriber.Run()
 	}()
 
-	// Aguardar sinal de término
+	// --- CRON ---
+	crn := cron.New()
+
+	// Função auxiliar para logar execuções de cron
+	addCronJob := func(spec string, cmd func(), description string) {
+		_, err := crn.AddFunc(spec, func() {
+			log.Printf("CRON: Iniciando tarefa '%s' (%s)", description, spec)
+			go func() {
+				defer func() {
+					if r := recover(); r != nil {
+						log.Printf("CRON: Panic recuperado na tarefa '%s': %v", description, r)
+					}
+				}()
+				cmd()
+				log.Printf("CRON: Tarefa '%s' concluída.", description)
+				printMemoryAndGoroutineUsage()
+			}()
+		})
+		if err != nil {
+			log.Fatalf("Erro ao agendar tarefa cron '%s': %v", description, err)
+		}
+	}
+
+	// Agendar tarefas cron
+	addCronJob("0 */6 * * *", func() {
+		proconfService.CalculateConfidenceScores()
+	}, "A cada 6 horas")
+
+	crn.Start()
+
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c

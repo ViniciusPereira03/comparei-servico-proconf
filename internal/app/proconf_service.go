@@ -26,4 +26,12 @@ func (s *ProconfService) GetMercadoProdutoByID(id int) (*proconf.Proconf, error)
 	return proconf, err
 }
 
+func (s *ProconfService) CalculateConfidenceScores() error {
+	log.Println("EXEC: service.CalculateConfidenceScores")
+	return s.proconfRepo.CalculateConfidenceScores()
+}
+
+func (s *ProconfService) CalculateConfidenceScoreForProduct(id int) error {
+	log.Printf("EXEC: service.CalculateConfidenceScoreForProduct ID: %d", id)
+	return s.proconfRepo.CalculateConfidenceScoreForProduct(id)
 }
