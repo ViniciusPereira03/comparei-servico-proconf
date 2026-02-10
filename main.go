@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -49,23 +50,33 @@ func main() {
 		log.Fatal("Ping no MongoDB falhou:", err)
 	}
 
-	userRepo := repository.NewUserRepository(
+	UserRepo := repository.NewUserRepository(
 		mongoClient,
 		os.Getenv("MONGO_DB_NAME"),
 		"usuarios",
 	)
 
-	logRepo := repository.NewLogsRepository(
+	LogRepo := repository.NewLogsRepository(
 		mongoClient,
 		os.Getenv("MONGO_DB_NAME"),
 		"logs_confirmacao",
 	)
 
-	userService := app.NewUserService(userRepo)
-	logService := app.NewLogsService(logRepo)
+	ProconfRepo := repository.NewProconfRepository(
+		mongoClient,
+		os.Getenv("MONGO_DB_NAME"),
+		"mercado_produtos",
+		"logs_confirmacao",
+	)
+
+	userService := app.NewUserService(UserRepo)
+	logService := app.NewLogsService(LogRepo)
+	proconfService := app.NewProconfService(ProconfRepo)
 
 	subscriber.SetUserService(userService)
 	subscriber.SetLogsConfirmacaoService(logService)
+	subscriber.SetProconfService(proconfService)
+	subscriber.SetServices(logService, proconfService)
 
 	// Iniciar o subscriber (rodar ouvindo eventos)
 	go func() {
@@ -103,8 +114,24 @@ func main() {
 
 	crn.Start()
 
+	// Graceful Shutdown
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
+	fmt.Println("🚀 Serviço Proconf iniciado e aguardando eventos/cron...")
 	<-c
 	fmt.Println("Encerrando serviço...")
+	crn.Stop()
+}
+
+// printMemoryAndGoroutineUsage imprime o uso atual de memória e o número de goroutines.
+func printMemoryAndGoroutineUsage() {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	log.Printf("RECURSOS: Memória Alocada = %v MiB, Memória Total Alocada = %v MiB, Memória do Sistema = %v MiB, Goroutines = %d",
+		bToMb(m.Alloc), bToMb(m.TotalAlloc), bToMb(m.Sys), runtime.NumGoroutine())
+}
+
+// bToMb converte bytes para megabytes.
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
 }
