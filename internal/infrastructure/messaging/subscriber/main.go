@@ -7,4 +7,5 @@ var rdb *redis.Client
 func Run() {
 	go subCreateUser()
 	go subCreateLogsConfirmacao()
+	go subCreateMercadoProdutos()
 }

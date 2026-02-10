@@ -14,8 +14,16 @@ func NewProconfService(proconfRepo proconf_interface.ProconfRepository) *Proconf
 	return &ProconfService{proconfRepo: proconfRepo}
 }
 
-func (s *ProconfService) Create(proconf *proconf.Proconf) error {
+func (s *ProconfService) Create(proconf *proconf.Proconf) (*proconf.Proconf, error) {
 	log.Println("EXEC: service.Create")
 	proconf, err := s.proconfRepo.Create(proconf)
-	return err
+	return proconf, err
+}
+
+func (s *ProconfService) GetMercadoProdutoByID(id int) (*proconf.Proconf, error) {
+	log.Println("EXEC: service.GetMercadoProdutoByID")
+	proconf, err := s.proconfRepo.GetMercadoProdutoByID(id)
+	return proconf, err
+}
+
 }
