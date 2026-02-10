@@ -19,6 +19,12 @@ func (s *UserService) CreateUser(user *users.User) error {
 	user, err := s.userRepo.CreateUser(user)
 	return err
 }
+
+func (s *UserService) GetUser(id string) (*users.User, error) {
+	log.Println("EXEC: service.GetUser")
+	user, err := s.userRepo.GetUser(id)
+	return user, err
+}
 func (s *UserService) UpdateLevelUser(u *users.User) error {
 	log.Println("EXEC: service.UpdateLevelUser")
 	err := s.userRepo.UpdateLevelUser(u)
