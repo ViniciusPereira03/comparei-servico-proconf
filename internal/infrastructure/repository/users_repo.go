@@ -29,6 +29,7 @@ func (r *MongoRepository) CreateUser(u *users.User) (*users.User, error) {
 	u.ModifiedAt = time.Now()
 	res, err := r.collection.InsertOne(context.Background(), u)
 	if err != nil {
+		log.Println("ERRO: repo.CreateUser - InsertOne:", err)
 		return nil, err
 	}
 	// Converter ObjectID para string
@@ -49,15 +50,11 @@ func (r *MongoRepository) GetUser(id string) (*users.User, error) {
 
 // UpdateLevelUser atualiza o nível do usuário
 func (r *MongoRepository) UpdateLevelUser(u *users.User) error {
-	oid, err := primitive.ObjectIDFromHex(u.ID)
-	if err != nil {
-		return err
-	}
 	update := bson.M{"$set": bson.M{
 		"level":       u.Level,
 		"modified_at": time.Now(),
 	}}
-	_, err = r.collection.UpdateByID(context.Background(), oid, update)
+	_, err := r.collection.UpdateOne(context.Background(), bson.M{"id_usuario": u.ID}, update)
 	return err
 }
 

@@ -53,6 +53,7 @@ func subCreateUser() error {
 }
 
 func SubUpdateLevelUser() error {
+	log.Println("EXEC: subUpdateLevelUser")
 	ctx := context.Background()
 
 	sub := rdb.Subscribe(ctx, "update_level_user")

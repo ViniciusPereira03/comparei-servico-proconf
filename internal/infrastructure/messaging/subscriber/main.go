@@ -8,4 +8,5 @@ func Run() {
 	go subCreateUser()
 	go subCreateLogsConfirmacao()
 	go subCreateMercadoProdutos()
+	go SubUpdateLevelUser()
 }
